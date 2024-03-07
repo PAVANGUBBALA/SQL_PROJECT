@@ -25,27 +25,27 @@ The data is available in 8 csv files:
 
 
 **The column description for these csv files is given below**
-The customers.csv contain following features:
+**The customers.csv contain following features**:
 
-Features                     Description
+**Features_Description**
 
-customer_id                  ID of the consumer who made the purchase 
+**customer_id**:ID of the consumer who made the purchase 
 
 
 
-customer_unique_id           Unique ID of the consumer
+**customer_unique_id**:           Unique ID of the consumer
 
-customer_zip_code_prefix     Zip Code of consumer’s location
+**customer_zip_code_prefix**:     Zip Code of consumer’s location
 
-customer_city                Name of the City from where order is made
+**customer_city**:          Name of the City from where order is made
 
-customer_state               State Code from where order is made (Eg. são paulo - SP)
+**customer_state**:               State Code from where order is made (Eg. são paulo - SP)
 
-The sellers.csv contains following features:
+**The sellers.csv contains following features**:
 
-Features                    Description
+**Features_Description**
 
-seller_id                     Unique ID of the seller registered
+**seller_id**:                    Unique ID of the seller registered
 
 seller_zip_code_prefix        Zip Code of the seller’s location
 
