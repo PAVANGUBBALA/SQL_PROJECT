@@ -1,0 +1,5 @@
+Get the time range between which the orders were placed.
+
+SELECT MIN(order_purchase_timestamp) AS MINIMUM_PURCHASE_DATE,MAX(order_purchase_timestamp)       
+AS MAXIMUM_PURCHASE_DATE
+FROM `Target.orders`
