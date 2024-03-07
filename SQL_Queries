@@ -90,6 +90,236 @@ group by
 order by 
       year,month
 
+How are the customers distributed across all the states
+select 
+      c.customer_state,
+      count(distinct c.customer_id) as Customers_Count
+from 
+      `Target.customers` as c
+inner join
+      `Target.orders` as o
+on  
+      c.customer_id = o.customer_id
+where 
+      o.order_status = "delivered"
+group by 
+      customer_state
+order by 
+      Customers_Count asc
+
+Get the % increase in the cost of orders from year 2017 to 2018 (include months between Jan to Aug only).
+
+with base as
+(select 
+      extract(year from o.order_purchase_timestamp) as year,
+      sum(p.payment_value) as payments_value
+from 
+      `Target.payments` as p
+inner join 
+      `Target.orders` as o
+on
+      p.order_id = o.order_id
+where extract(year from o.order_purchase_timestamp) between 2017 and 2018
+      and extract(month from o.order_purchase_timestamp) between 1 and 8 
+      and lower(o.order_status) = "delivered"
+group by year),
+base_2 as 
+(select 
+      * ,lag(payments_value,1) over( order by year asc) as prv_year_payment_value
+from base)
+select 
+      * , round(((payments_value-prv_year_payment_value)/(prv_year_payment_value))*100 ,1)as percentage_change
+from 
+    base_2
+Out_put
+Row	year   payments_value      prv_year_payment_value             percentage_change
+1	2017   3473862.760000024      null                               null
+2	2018   8452975.1999997925   3473862.7600000245                   143.3
+
+
+Calculate the Total & Average value of order price for each state
+
+select c.customer_state as state,
+       sum(p.payment_value) as Total,
+       avg(p.payment_value) as  Average
+from 
+        `Target.customers` as c
+inner join
+        `Target.orders` as o
+ on   
+        o.customer_id = c.customer_id
+ inner join
+        `Target.payments` p
+  on
+         p.order_id=o.order_id
+  where 
+        lower(o.order_status) = "delivered"
+  group by 
+        state
+
+Calculate the Total & Average value of order freight for each state.
+
+select 
+      c.customer_state as state,
+      sum(ot.freight_value) as Total ,
+      avg(ot.freight_value) as Average
+from
+      `Target.order_items` as ot
+inner join 
+      `Target.orders` as o
+on 
+      ot.order_id = o.order_id
+inner join 
+      `Target.customers` c
+on 
+      c.customer_id = o.customer_id
+where lower
+      (o.order_status) = "delivered"
+group by 
+      state
+
+Find the no. of days taken to deliver each order from the order’s purchase date as delivery time.
+Also, calculate the difference (in days) between the estimated & actual delivery date of an order
+
+select 
+      timestamp_diff(order_delivered_customer_date,order_purchase_timestamp,day) as Time_to_deliver,
+      timestamp_diff(order_delivered_customer_date,order_estimated_delivery_date,day) as Diff_estimated_delivery 
+from
+     `Target.orders`
+
+Find out the top 5 states with the Highest average freight value.
+
+select 
+      c.customer_state as state,
+      Round(Avg(ot.freight_value),1) as Top5_states_avg
+from
+      `Target.order_items` as ot
+inner join 
+      `Target.orders` as o
+on 
+      ot.order_id = o.order_id
+inner join 
+      `Target.customers` c
+on
+      c.customer_id = o.customer_id
+where 
+      lower(o.order_status)   = "delivered"
+group by 
+      state
+order by 
+      Top5_states_avg desc
+limit 5
+
+Find out the Bottom 5 states with the Highest average freight value.
+
+select 
+      c.customer_state as state,
+      Round(Avg(ot.freight_value),1) as Bottom_5_states_avg
+from
+      `Target.order_items` as ot
+inner join 
+      `Target.orders` as o
+on 
+      ot.order_id = o.order_id
+inner join 
+      `Target.customers` c
+on
+      c.customer_id = o.customer_id
+where 
+      lower(o.order_status)   = "delivered"
+group by 
+      state
+order by 
+      Bottom_5_states_avg asc
+limit 5
+
+Find out the Top 5 states with the Highest Average Delivery_Time
+
+
+select 
+      c.customer_state as state,
+      Round(avg(timestamp_diff(order_delivered_customer_date,order_purchase_timestamp,day)),1)      
+      as Avg_time_to_Deliver
+from 
+      `Target.orders` o 
+inner join 
+      `Target.customers` as c
+on 
+      c.customer_id = o.customer_id
+where 
+      lower(o.order_status) = "delivered"
+group by 
+      state
+order by 
+      Avg_time_to_deliver desc
+limit 5
+
+Find out the Bottom 5 states with the Highest Average Delivery_Time
+
+select 
+      c.customer_state as state,
+      Round(avg(timestamp_diff(order_delivered_customer_date,order_purchase_timestamp,day)),1)      
+      as Avg_time_to_Deliver
+from 
+      `Target.orders` o 
+inner join 
+      `Target.customers` as c
+on 
+      c.customer_id = o.customer_id
+where 
+      lower(o.order_status) = "delivered"
+group by 
+      state
+order by 
+      Avg_time_to_deliver asc
+limit 5
+
+Find out the top 5 states where the order delivery is really fast as compared to the estimated date of delivery.
+
+select 
+      c.customer_state as state,avg(timestamp_diff(o.order_delivered_customer_date,o. 
+      order_estimated_delivery_date,day)) as diff
+from 
+      `Target.orders` o 
+inner join 
+      `Target.customers` as c
+on 
+      c.customer_id = o.customer_id
+where 
+      lower(o.order_status) = "delivered"
+group by 
+    state
+order by 
+    diff asc
+limit 5
+
+Find the month on month no. of orders placed using different payment Types
+
+select 
+        p.payment_type as Type,
+        extract(year from o.order_purchase_timestamp) as year,
+        extract(month from order_purchase_timestamp) as month,count(distinct o.order_id) as        
+         Orders_Count
+from 
+        `Target.payments` p
+inner join 
+        `Target.orders` o
+  on 
+        o.order_id = p.order_id
+  group by 
+        Type,year,month
+  order by 
+        year asc,month asc
+Find the no. of orders placed on the basis of the payment installments that have been paid
+
+select 
+      count(distinct o.order_id) 
+from 
+      `Target.payments` p
+inner join 
+      `Target.orders` o
+on 
+      p.order_id = o.order_id
 
 
 
