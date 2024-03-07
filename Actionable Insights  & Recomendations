@@ -1,0 +1,17 @@
+1. Brazilian customers are tend purchase more products on Afternoon and Night
+2.Customer_state 'SP' has more customers i.e, 40510 
+3.Customer_state 'RR' has more customers i.e, 41 
+4. Top one state is 'PB' with highest average freight value
+5.Top one state is 'SP' with lowest average freight value
+6.Top one state is 'RR' with highest average time to delivery the order
+7.Top one state is 'SP' with Lowest average time to delivery the order
+8. In Nov & Oct month credit card payment are high ie Y:2017 M:10 count:3510,Y:2017 M:11 count:5867
+9.In Most Of the time Customer's are Prefering Credit Card payment Type Only
+
+Recomendation's
+
+1.Usually Customers are purchasing in afternoon time, so we need to provide some 
+offers or some benifits in day time to increase sales in Dawn time.
+2. Customers are more intersted in one time installments and
+Customers are less intersted with 11,13 & 14 installments
+3. Also as per data more custmers are using credit cards for payments and less using debit cards
