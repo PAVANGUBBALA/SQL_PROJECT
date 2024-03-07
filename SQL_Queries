@@ -1,4 +1,4 @@
-Get the time range between which the orders were placed.
+Get The Time Range Between Which The Orders Were Placed.
 
 SELECT 
       MIN(order_purchase_timestamp) AS MINIMUM_PURCHASE_DATE,
@@ -21,3 +21,75 @@ on
       O.customer_id = C.customer_id
 WHERE
       upper(order_status) = "DELIVERED"
+
+Is There a Growing Trend in the No.of Orders Placed Over The Past Years 
+
+select extract(year from order_purchase_timestamp) as year_Purchase
+      ,extract(month from order_purchase_timestamp) as month_Purchase
+      ,count(distinct order_id) as Count_of_Orders
+FROM 
+    `Target.orders`
+where
+     lower(order_status) = "delivered"
+group by 
+      year_Purchase,month_Purchase
+order by 
+      year_Purchase asc,month_Purchase asc
+
+During what time of the day, do the Brazilian customers mostly place their orders? (Dawn, Morning, Afternoon or Night)
+
+select
+      case 
+            When
+                 extract(hour from order_purchase_timestamp)   between 0 and 6 
+            Then 
+                  "Dawn"
+            When
+                 extract(hour from order_purchase_timestamp)   between 7 and 12
+            Then 
+                  "Morning"
+                        When
+                 extract(hour from order_purchase_timestamp)   between 13 and 18 
+            Then 
+                  "After_Noon"
+            When
+                 extract(hour from order_purchase_timestamp)   between 19 and  23
+            Then 
+                  "Night"
+        End as Slot,count(distinct  order_id) as oders_count
+ From 
+      `Target.orders`
+ where 
+      lower(order_status) = "delivered"
+Group by 
+      Slot
+
+Slot	       Order'sCount
+Night        :27522	
+After_Noon   : 36965
+Dawn         : 5072
+Morning      : 26919
+
+Get the month on month no. of orders placed in each state
+
+select 
+      extract(year from order_purchase_timestamp) as Year,
+      extract(month from order_purchase_timestamp) as Month,
+      c.customer_state as State,
+      count(order_id) as Total_orders_Count
+from 
+      `Target.orders` as o
+inner join
+      `Target.customers` as c
+on 
+      o.customer_id = c.customer_id
+where
+     o.order_status = "delivered"
+group by
+     year,month,c.customer_state
+order by 
+      year,month
+
+
+
+
