@@ -7,7 +7,7 @@ By analyzing this extensive dataset, it becomes possible to gain valuable insigh
 
 The data is available in 8 csv files:
 
-**1.customers.csv
+1.customers.csv
 
 2.sellers.csv
 
@@ -21,7 +21,7 @@ The data is available in 8 csv files:
 
 7.orders.csv
 
-8.products.csv**
+8.products.csv
 
 
 **The column description for these csv files is given below**
